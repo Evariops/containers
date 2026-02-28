@@ -272,6 +272,29 @@ jobs:
           upload-artifact: true
           upload-artifact-retention: 90
 
+      # ── Enrich SBOMs with source package metadata ─────────────
+      - name: Checkout (for scripts)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          sparse-checkout: .github/scripts
+
+      - name: Enrich SBOMs
+        env:
+          TAG: ${{ needs.build-amd64.outputs.tag }}
+        run: |
+          VER="${TAG#v}"; VER="${VER%.*}"
+          ./.github/scripts/enrich-sbom.sh \
+            --name fio \
+            --version "$VER" \
+            --supplier "axboe" \
+            --license "GPL-2.0-only" \
+            --purl "pkg:github/axboe/fio@fio-${VER}" \
+            --download "https://github.com/axboe/fio/archive/refs/tags/fio-${VER}.tar.gz" \
+            --vcs "https://github.com/axboe/fio" \
+            --spdx sbom.spdx.json \
+            --cdx sbom.cdx.json
+
       # ── Cosign: attest SBOMs on the image ─────────────────────
       - name: Attest SBOM
         env:
