@@ -278,13 +278,14 @@ jobs:
         with:
           persist-credentials: false
           sparse-checkout: .github/scripts
+          path: repo
 
       - name: Enrich SBOMs
         env:
           TAG: ${{ needs.build-amd64.outputs.tag }}
         run: |
           VER="${TAG#v}"; VER="${VER%.*}"
-          ./.github/scripts/enrich-sbom.sh \
+          ./repo/.github/scripts/enrich-sbom.sh \
             --name fio \
             --version "$VER" \
             --supplier "axboe" \
