@@ -34,6 +34,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG SPDK_VERSION=v26.01
 ARG TARGETARCH
+ARG BUILD_TYPE=release
 
 WORKDIR /build
 
@@ -71,7 +72,9 @@ RUN dnf install -y --setopt=install_weak_deps=False --nodocs liburing-devel liba
 #   iscsi-initiator, vhost, virtio, fsdev (FUSE), daos, rbd (Ceph),
 #   ublk (userspace block), dpdk-compressdev
 RUN SPDK_ARCH=$([ "${TARGETARCH}" = "arm64" ] && echo "armv8-a" || echo "nehalem") && \
+    DEBUG_FLAG=$([ "${BUILD_TYPE}" = "debug" ] && echo "--enable-debug" || true) && \
     ./configure \
+        ${DEBUG_FLAG} \
         --disable-tests \
         --disable-unit-tests \
         --disable-examples \
@@ -90,8 +93,11 @@ RUN SPDK_ARCH=$([ "${TARGETARCH}" = "arm64" ] && echo "armv8-a" || echo "nehalem
 
 RUN make -j"$(nproc)"
 
-# Strip debug symbols (~30-40% binary size reduction)
-RUN strip --strip-all build/bin/spdk_tgt
+# Strip debug symbols in release mode (~30-40% binary size reduction)
+# Debug builds keep symbols for perf top, perf record, gdb attach
+RUN if [ "${BUILD_TYPE}" != "debug" ]; then \
+      strip --strip-all build/bin/spdk_tgt; \
+    fi
 
 
 # ============================================================================
