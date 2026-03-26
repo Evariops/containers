@@ -163,8 +163,14 @@ FROM docker.io/library/fedora:43 AS debug
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Install debug & observability tooling
+# Install runtime libs (same Fedora as builder — ABI-compatible) + debug tooling
 RUN dnf install -y --setopt=install_weak_deps=False --nodocs \
+        liburing \
+        libaio \
+        libuuid \
+        openssl-libs \
+        numactl-libs \
+        libiscsi \
         gdb \
         strace \
         perf \
@@ -176,8 +182,8 @@ RUN dnf install -y --setopt=install_weak_deps=False --nodocs \
         jq \
     && dnf clean all && rm -rf /var/cache/dnf
 
-# Binary + runtime libs
-COPY --from=collector /rt/ /
+# Binary only (runtime .so provided by Fedora packages above)
+COPY --from=builder /build/spdk/build/bin/spdk_tgt /usr/local/bin/spdk_tgt
 
 # SPDK RPC scripts (useful for live debugging: rpc.py, spdkcli, etc.)
 COPY --from=builder /build/spdk/scripts/ /usr/local/share/spdk/scripts/
