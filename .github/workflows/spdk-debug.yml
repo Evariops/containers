@@ -2,9 +2,9 @@
 # ------------------------------------------------------------------
 # SPDK Debug Image — Build, Scan, Sign, Publish
 # ------------------------------------------------------------------
-# Debug variant of SPDK with --enable-debug (compiles all
-# SPDK_DEBUGLOG() call sites) and unstripped symbols for
-# perf top / perf record / gdb attach.
+# Debug variant of SPDK: Fedora-based image with --enable-debug,
+# unstripped symbols, and runtime tooling (gdb, strace, perf,
+# nvme-cli, RPC scripts) for interactive debugging.
 #
 # Tag convention:  spdk/v26.01.0  →  v26.01.0 (same tag as prod)
 # Registry:        ghcr.io/evariops/spdk-debug
@@ -106,6 +106,7 @@ jobs:
         with:
           context: images/spdk
           file: images/spdk/Dockerfile
+          target: debug
           platforms: linux/amd64
           build-args: BUILD_TYPE=debug
           push: ${{ startsWith(github.ref, 'refs/tags/') }}
@@ -170,6 +171,7 @@ jobs:
         with:
           context: images/spdk
           file: images/spdk/Dockerfile
+          target: debug
           platforms: linux/arm64
           build-args: BUILD_TYPE=debug
           push: ${{ startsWith(github.ref, 'refs/tags/') }}

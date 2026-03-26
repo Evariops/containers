@@ -154,7 +154,56 @@ RUN set -euo pipefail && \
 
 
 # ============================================================================
-# Stage 3: Production image (scratch — nothing but spdk_tgt + its libs)
+# Stage 3: Debug image (Fedora-based — shell, gdb, strace, perf, RPC scripts)
+# ============================================================================
+# Built only when explicitly targeted:
+#   docker build --target debug --build-arg BUILD_TYPE=debug .
+# ============================================================================
+FROM docker.io/library/fedora:43 AS debug
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Install debug & observability tooling
+RUN dnf install -y --setopt=install_weak_deps=False --nodocs \
+        gdb \
+        strace \
+        perf \
+        lsof \
+        procps-ng \
+        iproute \
+        nvme-cli \
+        python3 \
+        jq \
+    && dnf clean all && rm -rf /var/cache/dnf
+
+# Binary + runtime libs
+COPY --from=collector /rt/ /
+
+# SPDK RPC scripts (useful for live debugging: rpc.py, spdkcli, etc.)
+COPY --from=builder /build/spdk/scripts/ /usr/local/share/spdk/scripts/
+
+LABEL org.opencontainers.image.title="SPDK Data Engine (debug)" \
+      org.opencontainers.image.description="Fedora-based SPDK debug image with gdb, strace, perf, and RPC scripts" \
+      org.opencontainers.image.vendor="Evariops" \
+      org.opencontainers.image.source="https://github.com/Evariops/containers" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      io.k8s.security.capabilities.required="SYS_ADMIN,IPC_LOCK"
+
+ENV PATH="/usr/local/bin:/usr/local/share/spdk/scripts:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    LD_LIBRARY_PATH="/lib64:/lib:/usr/lib64:/usr/lib" \
+    SPDK_RPC_SOCKET="/var/tmp/spdk.sock" \
+    SPDK_CPU_MASK="0x1"
+
+EXPOSE 4420
+
+USER 1000:1000
+
+ENTRYPOINT ["/usr/local/bin/spdk_tgt"]
+CMD ["-r", "/var/tmp/spdk.sock", "-m", "0x1", "--wait-for-rpc"]
+
+
+# ============================================================================
+# Stage 4: Production image (scratch — nothing but spdk_tgt + its libs)
 # ============================================================================
 FROM scratch
 
