@@ -12,17 +12,6 @@ updates:
       - "dependencies"
       - "github-actions"
 
-  # Docker — check daily for base image updates (SPDK)
-  - package-ecosystem: "docker"
-    directory: "/images/spdk"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "docker"
-    labels:
-      - "dependencies"
-      - "docker"
-
   # Docker — check daily for base image updates (FIO)
   - package-ecosystem: "docker"
     directory: "/images/fio"

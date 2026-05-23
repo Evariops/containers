@@ -16,19 +16,13 @@ Every image in this repository is:
 
 | Image | What it does | Upstream | Final size |
 |-------|-------------|----------|------------|
-| **[spdk]** | NVMe-oF TCP/RDMA storage engine | [spdk/spdk](https://github.com/spdk/spdk) | ~14 MB |
 | **[fio]** | I/O benchmarking tool (static binary) | [axboe/fio](https://github.com/axboe/fio) | ~0.5 MB |
 
-[spdk]: https://ghcr.io/evariops/spdk
 [fio]: https://ghcr.io/evariops/fio
 
 ### Pull an image
 
 ```bash
-# SPDK
-docker pull ghcr.io/evariops/spdk:<tag>
-
-# FIO
 docker pull ghcr.io/evariops/fio:<tag>
 ```
 
@@ -39,13 +33,13 @@ docker pull ghcr.io/evariops/fio:<tag>
 There is no `latest` tag. All exact tags are **immutable**.
 
 ```
-ghcr.io/evariops/spdk:v26.01.0   ← exact version, never changes
-ghcr.io/evariops/spdk:v26.01     ← floating, follows the latest patch
+ghcr.io/evariops/fio:v3.41.0   ← exact version, never changes
+ghcr.io/evariops/fio:v3.41     ← floating, follows the latest patch
 ```
 
 The version scheme is **`v<upstream>.<patch>`** where the patch number tracks our rebuilds (Dockerfile changes, dependency bumps) of the same upstream release.
 
-> Git tags follow the convention `spdk/v26.01.0`, `fio/v3.41.0`, etc.
+> Git tags follow the convention `fio/v3.41.0`, etc.
 
 ---
 
@@ -57,7 +51,7 @@ All images are signed with [Sigstore cosign](https://docs.sigstore.dev/) (keyles
 cosign verify \
   --certificate-identity-regexp="https://github.com/Evariops/containers/" \
   --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
-  ghcr.io/evariops/spdk:<tag>
+  ghcr.io/evariops/fio:<tag>
 ```
 
 ## Inspect the SBOM
@@ -69,7 +63,7 @@ Both SPDX and CycloneDX SBOMs are attached to each image.
 cosign verify-attestation --type spdxjson \
   --certificate-identity-regexp="https://github.com/Evariops/containers/" \
   --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
-  ghcr.io/evariops/spdk:<tag> 2>/dev/null | jq -r '.payload' | base64 -d | jq .
+  ghcr.io/evariops/fio:<tag> 2>/dev/null | jq -r '.payload' | base64 -d | jq .
 ```
 
 Replace `spdxjson` with `cyclonedx` for the CycloneDX format.

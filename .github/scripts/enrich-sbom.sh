@@ -4,13 +4,13 @@
 #
 # Usage:
 #   enrich-sbom.sh \
-#     --name spdk \
-#     --version 26.01 \
-#     --supplier "SPDK Project (Linux Foundation)" \
-#     --license BSD-3-Clause \
-#     --purl "pkg:github/spdk/spdk@v26.01" \
-#     --download "https://github.com/spdk/spdk/archive/refs/tags/v26.01.tar.gz" \
-#     --vcs "https://github.com/spdk/spdk" \
+#     --name fio \
+#     --version 3.41 \
+#     --supplier "Jens Axboe" \
+#     --license GPL-2.0-only \
+#     --purl "pkg:github/axboe/fio@fio-3.41" \
+#     --download "https://github.com/axboe/fio/archive/refs/tags/fio-3.41.tar.gz" \
+#     --vcs "https://github.com/axboe/fio" \
 #     --spdx sbom.spdx.json \
 #     --cdx  sbom.cdx.json
 # ──────────────────────────────────────────────────────────────────
