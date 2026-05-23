@@ -11,10 +11,10 @@
 # Supported architectures: linux/amd64, linux/arm64
 #
 # Build:
-#   docker build -t ghcr.io/evariops/fio:v3.42.0 .
+#   docker build -t ghcr.io/evariops/fio:v3.41.0 .
 #
 # Usage (with HTTP controller for graceful stop):
-#   docker run --rm -p 8080:8080 ghcr.io/evariops/fio:v3.42.0 \
+#   docker run --rm -p 8080:8080 ghcr.io/evariops/fio:v3.41.0 \
 #     -- /etc/fio/job.fio --output-format=json+
 #
 #   Then: curl -X POST http://localhost:8080/stop   # graceful stop with results
@@ -28,7 +28,7 @@
 # ============================================================================
 FROM docker.io/library/alpine:3.23 AS fio-builder
 
-ARG FIO_VERSION=fio-3.42
+ARG FIO_VERSION=fio-3.41
 
 WORKDIR /build
 
