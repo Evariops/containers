@@ -25,14 +25,14 @@ The controller starts alone and waits for a `/start` call to launch fio. This le
 ## Build
 
 ```bash
-docker build -t ghcr.io/evariops/fio:v3.41.0 images/fio/
+docker build -t ghcr.io/evariops/fio:v3.42.0 images/fio/
 ```
 
 Multi-arch:
 
 ```bash
 docker buildx build --platform linux/amd64,linux/arm64 \
-  -t ghcr.io/evariops/fio:v3.41.0 --push images/fio/
+  -t ghcr.io/evariops/fio:v3.42.0 --push images/fio/
 ```
 
 ## API
@@ -145,7 +145,7 @@ metadata:
 spec:
   containers:
   - name: fio
-    image: ghcr.io/evariops/fio:v3.41.0
+    image: ghcr.io/evariops/fio:v3.42.0
     ports:
     - containerPort: 8080
     env:
