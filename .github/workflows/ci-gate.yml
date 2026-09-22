@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# ------------------------------------------------------------------
+# CI Gate — pendant de `ci-gate` pour les PR hors périmètre des images
+# ------------------------------------------------------------------
+# `fio.yml` est filtré par chemins : il ne démarre pas sur une PR qui ne
+# touche pas `images/fio/**`. Sans ce workflow, le check `ci-gate` exigé
+# par la branch protection resterait indéfiniment en attente sur ces PR.
+# Il publie donc le même statut quand aucune image n'est concernée.
+# ------------------------------------------------------------------
+name: CI Gate
+
+on:
+  pull_request:
+    paths-ignore:
+      - "images/fio/**"
+      - ".github/workflows/fio.yml"
+
+permissions: {}
+
+jobs:
+  ci-gate:
+    name: ci-gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: No image change
+        run: echo "Aucune modification d'image, rien a construire."

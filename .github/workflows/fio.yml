@@ -309,3 +309,27 @@ jobs:
             --predicate sbom.cdx.json \
             --type cyclonedx \
             "${IMAGE_NAME}@${DIGEST}"
+
+  # ────────────────────────────────────────────────────────────────
+  # 5. CI gate — statut unique exigé par la branch protection
+  # ────────────────────────────────────────────────────────────────
+  # `publish` n'est volontairement pas dans `needs` : il ne tourne que
+  # sur tag, donc son résultat `skipped` sur PR n'apporte rien.
+  ci-gate:
+    name: ci-gate
+    needs: [lint, build-amd64, build-arm64]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check upstream jobs
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          set -euo pipefail
+          echo "Résultats amont : ${RESULTS}"
+          for result in ${RESULTS}; do
+            case "${result}" in
+              success | skipped) ;;
+              *) echo "::error::job amont en échec (${result})" ; exit 1 ;;
+            esac
+          done
