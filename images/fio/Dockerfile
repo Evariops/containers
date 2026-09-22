@@ -26,7 +26,7 @@
 # ============================================================================
 # Stage 1: Build FIO as a static binary
 # ============================================================================
-FROM docker.io/library/alpine:3.23 AS fio-builder
+FROM docker.io/library/alpine:3.24 AS fio-builder
 
 ARG FIO_VERSION=fio-3.41
 
