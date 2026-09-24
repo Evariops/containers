@@ -57,7 +57,7 @@ RUN ./configure --prefix=/usr/local --disable-native \
 # ============================================================================
 # Stage 2: Build fio-controller (Go static binary)
 # ============================================================================
-FROM docker.io/library/golang:1.26-alpine AS go-builder
+FROM docker.io/library/golang:1.27-alpine AS go-builder
 
 WORKDIR /src
 
